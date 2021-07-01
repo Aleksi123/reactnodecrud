@@ -2,12 +2,8 @@ const express = require("express");
 const app = express();
 const port = 4000;
 
-app.get("/", (req, res) => {
-  res.send("Hello");
-});
-
-var mysql = require("mysql");
-var connection = mysql.createConnection({
+const mysql = require("mysql");
+const connection = mysql.createConnection({
   host: "localhost",
   user: "root",
   password: "password",
@@ -17,6 +13,16 @@ var connection = mysql.createConnection({
 connection.connect(function (err) {
   if (err) throw err;
   console.log("Connected to MySQL DB.");
+});
+
+app.use(express.json());
+
+// GET all posts
+app.get("/", (req, res) => {
+  connection.query("SELECT * FROM posts", (err, result) => {
+    if (err) throw err;
+    res.json(result);
+  });
 });
 
 app.listen(port, () => {
